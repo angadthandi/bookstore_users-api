@@ -2,7 +2,9 @@ package users
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/angadthandi/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/angadthandi/bookstore_users-api/utils/date_utils"
 	"github.com/angadthandi/bookstore_users-api/utils/errors"
 )
@@ -12,6 +14,11 @@ var (
 )
 
 func (u *User) Get() *errors.RestErr {
+	err := users_db.Client.Ping()
+	if err != nil {
+		log.Fatalf("unable to connect to mysql db error: %v", err)
+	}
+
 	ret := usersDB[u.ID]
 	if ret == nil {
 		return errors.NewNotFoundError(
