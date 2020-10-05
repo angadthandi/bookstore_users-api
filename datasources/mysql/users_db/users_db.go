@@ -26,13 +26,16 @@ var (
 )
 
 func init() {
+	var err error
+	log.Println("init database connection...")
+
 	// user:pwd@tcp(host:port)/schema?charset=utf8
 	dataSourceName := fmt.Sprintf(
 		"%s:%s@tcp(%s)/%s?charset=utf8",
 		username, password, host, schema,
 	)
 
-	Client, err := sql.Open("mysql", dataSourceName)
+	Client, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		// failed to connect to DB...
 		log.Fatalf("unable to connect to mysql db error: %v", err)
@@ -44,4 +47,6 @@ func init() {
 	}
 
 	log.Println("database successfully configured")
+
+	return
 }
