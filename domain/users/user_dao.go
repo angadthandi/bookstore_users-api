@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/angadthandi/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/angadthandi/bookstore_users-api/utils/date_utils"
 	"github.com/angadthandi/bookstore_users-api/utils/errors"
@@ -8,13 +10,16 @@ import (
 )
 
 const (
-	queryInsertUser = `INSERT INTO users(first_name, last_name, email, date_created)
-		VALUES (?, ?, ?, ?)`
+	queryInsertUser = `INSERT INTO users
+		(first_name, last_name, email, date_created, status, password)
+		VALUES (?, ?, ?, ?, ?, ?)`
 	queryGetUser = `SELECT id, first_name, last_name, email, date_created
 		FROM users WHERE id=?`
 	queryUpdateUser = `UPDATE users SET first_name=?, last_name=?, email=?
 		WHERE id=?`
-	queryDeleteUser = `DELETE FROM users WHERE id=?`
+	queryDeleteUser       = `DELETE FROM users WHERE id=?`
+	queryFindUserByStatus = `SELECT id, first_name, last_name, email, date_created, status
+		FROM users WHERE status=?`
 )
 
 var (
@@ -63,10 +68,11 @@ func (u *User) Save() *errors.RestErr {
 	}
 	defer stmt.Close()
 
-	u.DateCreated = date_utils.GetNowString()
+	u.DateCreated = date_utils.GetNowDBFormat()
+	u.Status = StatusActive
 
 	insertRet, err := stmt.Exec(
-		u.FirstName, u.LastName, u.Email, u.DateCreated,
+		u.FirstName, u.LastName, u.Email, u.DateCreated, u.Status, u.Password,
 	)
 	if err != nil {
 		return mysql_utils.ParseError(err)
@@ -128,4 +134,44 @@ func (u *User) Delete() *errors.RestErr {
 	}
 
 	return nil
+}
+
+func (u *User) FindByStatus(status string) ([]User, *errors.RestErr) {
+	stmt, err := users_db.Client.Prepare(queryFindUserByStatus)
+	if err != nil {
+		return nil, errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(status)
+	if err != nil {
+		return nil, mysql_utils.ParseError(err)
+	}
+	defer rows.Close()
+
+	var ret []User
+	for rows.Next() {
+		var user User
+		err = rows.Scan(
+			&user.ID,
+			&user.FirstName,
+			&user.LastName,
+			&user.Email,
+			&user.DateCreated,
+			&user.Status,
+		)
+		if err != nil {
+			return nil, mysql_utils.ParseError(err)
+		}
+
+		ret = append(ret, user)
+	}
+
+	if len(ret) == 0 {
+		return nil, errors.NewNotFoundError(
+			fmt.Sprintf("no user matching status: %v", status),
+		)
+	}
+
+	return ret, nil
 }
