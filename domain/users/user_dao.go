@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/angadthandi/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/angadthandi/bookstore_users-api/utils/date_utils"
 	"github.com/angadthandi/bookstore_users-api/utils/errors"
 	"github.com/angadthandi/bookstore_users-api/utils/mysql_utils"
 )
@@ -13,7 +12,7 @@ const (
 	queryInsertUser = `INSERT INTO users
 		(first_name, last_name, email, date_created, status, password)
 		VALUES (?, ?, ?, ?, ?, ?)`
-	queryGetUser = `SELECT id, first_name, last_name, email, date_created
+	queryGetUser = `SELECT id, first_name, last_name, email, date_created, status
 		FROM users WHERE id=?`
 	queryUpdateUser = `UPDATE users SET first_name=?, last_name=?, email=?
 		WHERE id=?`
@@ -40,6 +39,7 @@ func (u *User) Get() *errors.RestErr {
 		&u.LastName,
 		&u.Email,
 		&u.DateCreated,
+		&u.Status,
 	)
 	if err != nil {
 		return mysql_utils.ParseError(err)
@@ -67,9 +67,6 @@ func (u *User) Save() *errors.RestErr {
 		return errors.NewInternalServerError(err.Error())
 	}
 	defer stmt.Close()
-
-	u.DateCreated = date_utils.GetNowDBFormat()
-	u.Status = StatusActive
 
 	insertRet, err := stmt.Exec(
 		u.FirstName, u.LastName, u.Email, u.DateCreated, u.Status, u.Password,
