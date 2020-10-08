@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/angadthandi/bookstore_users-api/datasources/mysql/users_db"
+	"github.com/angadthandi/bookstore_users-api/logger"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,8 +18,8 @@ func StartApplication() {
 		log.Fatalf("unable to connect to mysql db error: %v", err)
 	}
 
-	log.Println("StartApplication...")
-
 	mapUrls()
+
+	logger.Info("about to start the application")
 	router.Run(":8080")
 }
