@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/angadthandi/bookstore_oauth-go/oauth"
 	"github.com/angadthandi/bookstore_users-api/domain/users"
 	"github.com/angadthandi/bookstore_users-api/services"
 	"github.com/angadthandi/bookstore_users-api/utils/errors"
@@ -66,6 +67,22 @@ func Create(c *gin.Context) {
 }
 
 func Get(c *gin.Context) {
+	authErr := oauth.AuthenticateRequest(c.Request)
+	if authErr != nil {
+		c.JSON(authErr.Status, authErr)
+		return
+	}
+
+	// callerID := oauth.GetCallerID(c.Request)
+	// if callerID == 0 {
+	// 	err := errors.RestErr{
+	// 		Status:  http.StatusUnauthorized,
+	// 		Message: "resource not available",
+	// 	}
+	// 	c.JSON(err.Status, err)
+	// 	return
+	// }
+
 	userID, idErr := getUserID(c.Param("user_id"))
 	if idErr != nil {
 		c.JSON(idErr.Status, idErr)
@@ -80,7 +97,20 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	out, err := ret.Marshal(c.GetHeader("X-Public") == "true")
+	if oauth.GetCallerID(c.Request) == ret.ID {
+		private, privateErr := ret.Marshal(false)
+		if privateErr != nil {
+			// marshal err
+			restErr := errors.NewInternalServerError("user marshal error")
+			c.JSON(restErr.Status, restErr)
+			return
+		}
+
+		c.JSON(http.StatusOK, private)
+		return
+	}
+
+	out, err := ret.Marshal(oauth.IsPublic(c.Request))
 	if err != nil {
 		// marshal err
 		restErr := errors.NewInternalServerError("user marshal error")
