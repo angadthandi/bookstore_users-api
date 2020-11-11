@@ -1,20 +1,21 @@
 package users
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/angadthandi/bookstore_oauth-go/oauth"
 	"github.com/angadthandi/bookstore_users-api/domain/users"
 	"github.com/angadthandi/bookstore_users-api/services"
-	"github.com/angadthandi/bookstore_users-api/utils/errors"
+	"github.com/angadthandi/bookstore_utils-go/rest_errors"
 	"github.com/gin-gonic/gin"
 )
 
-func getUserID(userIDParam string) (int64, *errors.RestErr) {
+func getUserID(userIDParam string) (int64, *rest_errors.RestErr) {
 	userID, uErr := strconv.ParseInt(userIDParam, 10, 64)
 	if uErr != nil {
-		return 0, errors.NewBadRequestError("invalid user id")
+		return 0, rest_errors.NewBadRequestError("invalid user id")
 	}
 
 	return userID, nil
@@ -41,7 +42,7 @@ func Create(c *gin.Context) {
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		// bad request error...
-		restErr := errors.NewBadRequestError("invalid json")
+		restErr := rest_errors.NewBadRequestError("invalid json")
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -57,7 +58,10 @@ func Create(c *gin.Context) {
 	out, err := ret.Marshal(c.GetHeader("X-Public") == "true")
 	if err != nil {
 		// marshal err
-		restErr := errors.NewInternalServerError("user marshal error")
+		restErr := rest_errors.NewInternalServerError(
+			"error processing request",
+			errors.New("user marshal error"),
+		)
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -75,7 +79,7 @@ func Get(c *gin.Context) {
 
 	// callerID := oauth.GetCallerID(c.Request)
 	// if callerID == 0 {
-	// 	err := errors.RestErr{
+	// 	err := rest_errors.RestErr{
 	// 		Status:  http.StatusUnauthorized,
 	// 		Message: "resource not available",
 	// 	}
@@ -101,7 +105,10 @@ func Get(c *gin.Context) {
 		private, privateErr := ret.Marshal(false)
 		if privateErr != nil {
 			// marshal err
-			restErr := errors.NewInternalServerError("user marshal error")
+			restErr := rest_errors.NewInternalServerError(
+				"error processing request",
+				errors.New("user marshal error"),
+			)
 			c.JSON(restErr.Status, restErr)
 			return
 		}
@@ -113,7 +120,10 @@ func Get(c *gin.Context) {
 	out, err := ret.Marshal(oauth.IsPublic(c.Request))
 	if err != nil {
 		// marshal err
-		restErr := errors.NewInternalServerError("user marshal error")
+		restErr := rest_errors.NewInternalServerError(
+			"error processing request",
+			errors.New("user marshal error"),
+		)
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -133,7 +143,7 @@ func Update(c *gin.Context) {
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		// bad request error...
-		restErr := errors.NewBadRequestError("invalid json")
+		restErr := rest_errors.NewBadRequestError("invalid json")
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -152,7 +162,10 @@ func Update(c *gin.Context) {
 	out, err := ret.Marshal(c.GetHeader("X-Public") == "true")
 	if err != nil {
 		// marshal err
-		restErr = errors.NewInternalServerError("user marshal error")
+		restErr := rest_errors.NewInternalServerError(
+			"error processing request",
+			errors.New("user marshal error"),
+		)
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -190,7 +203,10 @@ func Search(c *gin.Context) {
 	out, err := users.Marshal(c.GetHeader("X-Public") == "true")
 	if err != nil {
 		// marshal err
-		restErr := errors.NewInternalServerError("user marshal error")
+		restErr := rest_errors.NewInternalServerError(
+			"error processing request",
+			errors.New("user marshal error"),
+		)
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -202,7 +218,7 @@ func Login(c *gin.Context) {
 	var request users.LoginRequest
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
-		restErr := errors.NewBadRequestError("invalid json")
+		restErr := rest_errors.NewBadRequestError("invalid json")
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -217,7 +233,10 @@ func Login(c *gin.Context) {
 	out, err := user.Marshal(c.GetHeader("X-Public") == "true")
 	if err != nil {
 		// marshal err
-		restErr := errors.NewInternalServerError("user marshal error")
+		restErr := rest_errors.NewInternalServerError(
+			"error processing request",
+			errors.New("user marshal error"),
+		)
 		c.JSON(restErr.Status, restErr)
 		return
 	}
