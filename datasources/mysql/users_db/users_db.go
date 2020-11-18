@@ -6,7 +6,9 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql"
+	// _ "github.com/go-sql-driver/mysql"
+	"github.com/angadthandi/bookstore_utils-go/logger"
+	"github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -46,6 +48,7 @@ func init() {
 		log.Fatalf("unable to connect to mysql db error: %v", err)
 	}
 
+	mysql.SetLogger(logger.GetLogger())
 	log.Println("database successfully configured")
 
 	return

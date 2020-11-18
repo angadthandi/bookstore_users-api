@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"github.com/angadthandi/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/angadthandi/bookstore_users-api/logger"
+	// "github.com/angadthandi/bookstore_users-api/logger"
+	"github.com/angadthandi/bookstore_utils-go/logger"
 	"github.com/angadthandi/bookstore_utils-go/rest_errors"
 )
 

@@ -3,6 +3,10 @@ github.com/angadthandi/bookstore_oauth-go v0.0.0-20201018204813-d2b9c1bfad52 h1:
 github.com/angadthandi/bookstore_oauth-go v0.0.0-20201018204813-d2b9c1bfad52/go.mod h1:ZeLzZYKNzQTs08A9/+NmyU0gGApFlp/ba31M5PlzzOY=
 github.com/angadthandi/bookstore_utils-go v0.0.0-20201111040455-09cc3d68b223 h1:X4nJngqaawQiBwSPR08c9U/R5ehR0K0pqvHZ3cm2/qQ=
 github.com/angadthandi/bookstore_utils-go v0.0.0-20201111040455-09cc3d68b223/go.mod h1:HiEUR0Y17vhj8Vzl3XmDXkr0aWX0LDvZEJoLQbRZiU0=
+github.com/angadthandi/bookstore_utils-go v0.0.0-20201117023131-1f7d6d5be1cc h1:3gMP8peA+4y2omwa3oHby/rFjK2gSeInh5q455DsF8U=
+github.com/angadthandi/bookstore_utils-go v0.0.0-20201117023131-1f7d6d5be1cc/go.mod h1:HiEUR0Y17vhj8Vzl3XmDXkr0aWX0LDvZEJoLQbRZiU0=
+github.com/angadthandi/bookstore_utils-go v0.0.0-20201118022431-813a576c9a2d h1:SN8AGP1PvtJgyo27ilZe+pIvB0aLddWEjetSzv88A+8=
+github.com/angadthandi/bookstore_utils-go v0.0.0-20201118022431-813a576c9a2d/go.mod h1:mnRKcPRfpTZorzKB+xHnfheu68ZmJcoGMsfFSVWmbNc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
