@@ -3,11 +3,8 @@ module github.com/angadthandi/bookstore_users-api
 go 1.15
 
 require (
-	github.com/angadthandi/bookstore_oauth-go v0.0.0-20201018204813-d2b9c1bfad52
-	github.com/angadthandi/bookstore_utils-go v0.0.0-20201118022431-813a576c9a2d
-	// github.com/angadthandi/bookstore_utils-go v0.0.0-20201111040455-09cc3d68b223
+	github.com/angadthandi/bookstore_oauth-go v0.0.0-20201119022956-8b643501f72a
+	github.com/angadthandi/bookstore_utils-go v0.0.0-20201119021724-f45b1cc55472
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/mercadolibre/golang-restclient v0.0.0-20170701022150-51958130a0a0 // indirect
-	go.uber.org/zap v1.16.0
 )

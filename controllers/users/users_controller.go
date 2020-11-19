@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getUserID(userIDParam string) (int64, *rest_errors.RestErr) {
+func getUserID(userIDParam string) (int64, rest_errors.RestErr) {
 	userID, uErr := strconv.ParseInt(userIDParam, 10, 64)
 	if uErr != nil {
 		return 0, rest_errors.NewBadRequestError("invalid user id")
@@ -43,7 +43,7 @@ func Create(c *gin.Context) {
 	if err != nil {
 		// bad request error...
 		restErr := rest_errors.NewBadRequestError("invalid json")
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -51,7 +51,7 @@ func Create(c *gin.Context) {
 	ret, saveErr := userService.CreateUser(user)
 	if saveErr != nil {
 		// user create err
-		c.JSON(saveErr.Status, saveErr)
+		c.JSON(saveErr.Status(), saveErr)
 		return
 	}
 
@@ -62,7 +62,7 @@ func Create(c *gin.Context) {
 			"error processing request",
 			errors.New("user marshal error"),
 		)
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -73,7 +73,7 @@ func Create(c *gin.Context) {
 func Get(c *gin.Context) {
 	authErr := oauth.AuthenticateRequest(c.Request)
 	if authErr != nil {
-		c.JSON(authErr.Status, authErr)
+		c.JSON(authErr.Status(), authErr)
 		return
 	}
 
@@ -89,7 +89,7 @@ func Get(c *gin.Context) {
 
 	userID, idErr := getUserID(c.Param("user_id"))
 	if idErr != nil {
-		c.JSON(idErr.Status, idErr)
+		c.JSON(idErr.Status(), idErr)
 		return
 	}
 
@@ -97,7 +97,7 @@ func Get(c *gin.Context) {
 	ret, getErr := userService.GetUser(userID)
 	if getErr != nil {
 		// user create err
-		c.JSON(getErr.Status, getErr)
+		c.JSON(getErr.Status(), getErr)
 		return
 	}
 
@@ -109,7 +109,7 @@ func Get(c *gin.Context) {
 				"error processing request",
 				errors.New("user marshal error"),
 			)
-			c.JSON(restErr.Status, restErr)
+			c.JSON(restErr.Status(), restErr)
 			return
 		}
 
@@ -124,7 +124,7 @@ func Get(c *gin.Context) {
 			"error processing request",
 			errors.New("user marshal error"),
 		)
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -134,7 +134,7 @@ func Get(c *gin.Context) {
 func Update(c *gin.Context) {
 	userID, idErr := getUserID(c.Param("user_id"))
 	if idErr != nil {
-		c.JSON(idErr.Status, idErr)
+		c.JSON(idErr.Status(), idErr)
 		return
 	}
 
@@ -144,7 +144,7 @@ func Update(c *gin.Context) {
 	if err != nil {
 		// bad request error...
 		restErr := rest_errors.NewBadRequestError("invalid json")
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -155,7 +155,7 @@ func Update(c *gin.Context) {
 	userService := services.NewUserService()
 	ret, restErr := userService.UpdateUser(isPartial, user)
 	if restErr != nil {
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -166,7 +166,7 @@ func Update(c *gin.Context) {
 			"error processing request",
 			errors.New("user marshal error"),
 		)
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -176,14 +176,14 @@ func Update(c *gin.Context) {
 func Delete(c *gin.Context) {
 	userID, idErr := getUserID(c.Param("user_id"))
 	if idErr != nil {
-		c.JSON(idErr.Status, idErr)
+		c.JSON(idErr.Status(), idErr)
 		return
 	}
 
 	userService := services.NewUserService()
 	restErr := userService.DeleteUser(userID)
 	if restErr != nil {
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -196,7 +196,7 @@ func Search(c *gin.Context) {
 	userService := services.NewUserService()
 	users, searchErr := userService.Search(status)
 	if searchErr != nil {
-		c.JSON(searchErr.Status, searchErr)
+		c.JSON(searchErr.Status(), searchErr)
 		return
 	}
 
@@ -207,7 +207,7 @@ func Search(c *gin.Context) {
 			"error processing request",
 			errors.New("user marshal error"),
 		)
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
@@ -219,14 +219,14 @@ func Login(c *gin.Context) {
 	err := c.ShouldBindJSON(&request)
 	if err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid json")
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
 	userService := services.NewUserService()
 	user, usvcErr := userService.LoginUser(request)
 	if usvcErr != nil {
-		c.JSON(usvcErr.Status, usvcErr)
+		c.JSON(usvcErr.Status(), usvcErr)
 		return
 	}
 
@@ -237,7 +237,7 @@ func Login(c *gin.Context) {
 			"error processing request",
 			errors.New("user marshal error"),
 		)
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
